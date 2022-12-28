@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 func HelloHandler(w http.ResponseWriter, r *http.Request) {
@@ -19,7 +22,10 @@ func ArticleListHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ArticleDetailHandler(w http.ResponseWriter, r *http.Request) {
-	articleId := 1
+	articleId, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		http.Error(w, "Invalid query parameter", http.StatusBadRequest)
+	}
 	resString := fmt.Sprintf("Artilce NO.%d\n", articleId)
 	io.WriteString(w, resString)
 }
